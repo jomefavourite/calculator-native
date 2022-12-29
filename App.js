@@ -26,37 +26,34 @@ function valueHasOp(text) {
   )
     return false;
 
-  try {
-    for (let i = 0; i <= text.length; i++) {
-      if (
-        text[i] === "+" ||
-        text[i] === "-" ||
-        text[i] === "*" ||
-        text[i] === "/" ||
-        text[i] === "%"
-      ) {
-        return true;
-      }
-      // return false;
+  for (let i = 0; i <= text.length; i++) {
+    if (
+      text[i] === "+" ||
+      text[i] === "-" ||
+      text[i] === "*" ||
+      text[i] === "/" ||
+      text[i] === "%"
+    ) {
+      return true;
     }
-  } catch (e) {
-    return false;
+    // return false;
   }
+  return false;
 }
 export default function App() {
   const [calValue, setCalValue] = useState("");
   const [previewValue, setPreviewValue] = useState("");
   const [cursorSel, setCursorSel] = useState({ end: 0, start: 0 });
   const [isCursorSel, setIsCursorSel] = useState(false);
-  // const [scaleAnim, setScaleAnim] = useState(new Animated.Value(1));
   const appState = useRef(AppState.currentState);
 
-  const scaleAnim = useRef(new Animated.Value(1)).current;
+  // const scaleAnim = useRef(new Animated.Value(1)).current;
+  const scaleAnim = 0;
 
   useEffect(() => {
-    console.log(valueHasOp(calValue), "valueHasOp");
+    // console.log(valueHasOp(calValue), "valueHasOp");
     if (valueHasOp(calValue)) {
-      console.log(eval(calValue), "eval");
+      // console.log(eval(calValue), "eval");
       let prevAns = eval(calValue);
       setPreviewValue(`${prevAns}`);
     } else {
@@ -83,22 +80,21 @@ export default function App() {
   }, []);
 
   const handlePress = (text) => {
-    const corrText = text === "X" ? "*" : text;
+    const corrText = text === "X" ? "*" : text === "+/-" ? "-" : text;
 
-    Animated.timing(scaleAnim, {
-      toValue: 0.5,
-      duration: 200,
-    }).start(({ finished }) => {
-      // scaleAnim = 1;
-      // if (finished) {
-      // RESET
-      // setTimeout(() => {
-      //   Animated.spring(scaleAnim, {
-      //     toValue: 1,
-      //   }).start();
-      // }, 0);
-      // }
-    });
+    // Animated.timing(scaleAnim, {
+    //   toValue: 0.5,
+    //   duration: 200,
+    //   useNativeDriver: true,
+    // }).start(({ finished }) => {
+    //   if (!finished) {
+    //     setTimeout(() => {
+    //       Animated.spring(scaleAnim, {
+    //         toValue: 1,
+    //       }).start();
+    //     }, 0);
+    //   }
+    // });
 
     setCalValue((prev) => {
       setCursorSel({ end: cursorSel.end + 1, start: cursorSel.start + 1 });
@@ -157,8 +153,15 @@ export default function App() {
       />
 
       <View style={styles.backButton}>
-        <Pressable onPress={() => handleBackSpace()}>
-          <Ionicons name='md-backspace-outline' size={24} color='green' />
+        <Pressable
+          onPress={() => handleBackSpace()}
+          disabled={calValue ? false : true}
+        >
+          <Ionicons
+            name='md-backspace-outline'
+            size={24}
+            color={calValue ? "green" : "#035903"}
+          />
         </Pressable>
       </View>
 

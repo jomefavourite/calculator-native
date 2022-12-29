@@ -23,24 +23,21 @@ export default function Button({ scaleAnim, label, type, handlePress, icon }) {
       style={[styles.button, getButtonColor]}
       onPress={() => handlePress(label)}
     >
-      <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
-        {icon ? (
-          icon
-        ) : (
-          <Text
-            style={{ fontSize: 26, color: getTextColor, fontWeight: "bold" }}
-          >
-            {label}
-          </Text>
-        )}
-      </Animated.View>
+      {/* <Animated.View style={{ transform: [{ scale: scaleAnim }] }}> */}
+      {icon ? (
+        icon
+      ) : (
+        <Text style={{ fontSize: 26, color: getTextColor, fontWeight: "bold" }}>
+          {label}
+        </Text>
+      )}
+      {/* </Animated.View> */}
     </TouchableHighlight>
   );
 }
 
 const styles = StyleSheet.create({
   button: {
-    // flex: 1,
     borderRadius: 50,
     backgroundColor: "#171717",
     width: 80,
