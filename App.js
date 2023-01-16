@@ -7,7 +7,6 @@ import {
   View,
   Keyboard,
   AppState,
-  Animated,
 } from "react-native";
 import Button from "./components/Button";
 import { Ionicons, FontAwesome5, FontAwesome } from "@expo/vector-icons";
@@ -47,13 +46,10 @@ export default function App() {
   const [isCursorSel, setIsCursorSel] = useState(false);
   const appState = useRef(AppState.currentState);
 
-  // const scaleAnim = useRef(new Animated.Value(1)).current;
   const scaleAnim = 0;
 
   useEffect(() => {
-    // console.log(valueHasOp(calValue), "valueHasOp");
     if (valueHasOp(calValue)) {
-      // console.log(eval(calValue), "eval");
       let prevAns = eval(calValue);
       setPreviewValue(`${prevAns}`);
     } else {
@@ -71,7 +67,6 @@ export default function App() {
       }
 
       appState.current = nextAppState;
-      // console.log("AppState", appState.current);
     });
 
     return () => {
@@ -81,20 +76,6 @@ export default function App() {
 
   const handlePress = (text) => {
     const corrText = text === "X" ? "*" : text === "+/-" ? "-" : text;
-
-    // Animated.timing(scaleAnim, {
-    //   toValue: 0.5,
-    //   duration: 200,
-    //   useNativeDriver: true,
-    // }).start(({ finished }) => {
-    //   if (!finished) {
-    //     setTimeout(() => {
-    //       Animated.spring(scaleAnim, {
-    //         toValue: 1,
-    //       }).start();
-    //     }, 0);
-    //   }
-    // });
 
     setCalValue((prev) => {
       setCursorSel({ end: cursorSel.end + 1, start: cursorSel.start + 1 });
@@ -114,7 +95,7 @@ export default function App() {
 
   const handleBackSpace = () => {
     const remainValue = calValue.slice(0, calValue.length - 1);
-    setCalValue((prev) => remainValue);
+    setCalValue(() => remainValue);
   };
 
   const handleEqual = () => {
@@ -139,8 +120,6 @@ export default function App() {
           setCursorSel(e.nativeEvent.selection);
         }}
         showSoftInputOnFocus={false}
-        // onFocus={Keyboard.dismiss()}
-        // editable={false}
       />
       <TextInput
         value={previewValue}
@@ -175,12 +154,7 @@ export default function App() {
 
       <View style={styles.buttonContainer}>
         <Row>
-          <Button
-            handlePress={handleClear}
-            label={"C"}
-            type='clear'
-            scaleAnim={scaleAnim}
-          />
+          <Button handlePress={handleClear} label={"C"} type='clear' />
           <Button
             handlePress={handlePress}
             label={"()"}
@@ -193,72 +167,57 @@ export default function App() {
                 style={{ fontWeight: "bold" }}
               />
             }
-            scaleAnim={scaleAnim}
           />
-          <Button
-            handlePress={handlePress}
-            label={"%"}
-            type='operator'
-            scaleAnim={scaleAnim}
-          />
+          <Button handlePress={handlePress} label={"%"} type='operator' />
           <Button
             handlePress={handlePress}
             label={"/"}
             type='operator'
             icon={<FontAwesome5 name='divide' size={24} color='green' />}
-            scaleAnim={scaleAnim}
           />
         </Row>
         <Row>
-          <Button handlePress={handlePress} label={"7"} scaleAnim={scaleAnim} />
-          <Button handlePress={handlePress} label={"8"} scaleAnim={scaleAnim} />
-          <Button handlePress={handlePress} label={"9"} scaleAnim={scaleAnim} />
+          <Button handlePress={handlePress} label={"7"} />
+          <Button handlePress={handlePress} label={"8"} />
+          <Button handlePress={handlePress} label={"9"} />
           <Button
             handlePress={handlePress}
             label={"X"}
             type='operator'
             icon={<FontAwesome5 name='times' size={24} color='green' />}
-            scaleAnim={scaleAnim}
           />
         </Row>
         <Row>
-          <Button handlePress={handlePress} label={"4"} scaleAnim={scaleAnim} />
-          <Button handlePress={handlePress} label={"5"} scaleAnim={scaleAnim} />
-          <Button handlePress={handlePress} label={"6"} scaleAnim={scaleAnim} />
+          <Button handlePress={handlePress} label={"4"} />
+          <Button handlePress={handlePress} label={"5"} />
+          <Button handlePress={handlePress} label={"6"} />
           <Button
             handlePress={handlePress}
             label={"-"}
             type='operator'
             icon={<FontAwesome name='minus' size={24} color='green' />}
-            scaleAnim={scaleAnim}
           />
         </Row>
         <Row>
-          <Button handlePress={handlePress} label={"1"} scaleAnim={scaleAnim} />
-          <Button handlePress={handlePress} label={"2"} scaleAnim={scaleAnim} />
-          <Button handlePress={handlePress} label={"3"} scaleAnim={scaleAnim} />
+          <Button handlePress={handlePress} label={"1"} />
+          <Button handlePress={handlePress} label={"2"} />
+          <Button handlePress={handlePress} label={"3"} />
           <Button
             handlePress={handlePress}
             label={"+"}
             type='operator'
             icon={<FontAwesome5 name='plus' size={24} color='green' />}
-            scaleAnim={scaleAnim}
           />
         </Row>
         <Row>
-          <Button
-            handlePress={handlePress}
-            label={"+/-"}
-            scaleAnim={scaleAnim}
-          />
-          <Button handlePress={handlePress} label={"0"} scaleAnim={scaleAnim} />
-          <Button handlePress={handlePress} label={"."} scaleAnim={scaleAnim} />
+          <Button handlePress={handlePress} label={"+/-"} />
+          <Button handlePress={handlePress} label={"0"} />
+          <Button handlePress={handlePress} label={"."} />
           <Button
             handlePress={handleEqual}
             label={"="}
             type='equal'
             icon={<FontAwesome5 name='equals' size={24} color='white' />}
-            scaleAnim={scaleAnim}
           />
         </Row>
       </View>
@@ -280,7 +239,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   input: {
-    // height: 100,
     marginTop: 40,
     borderWidth: 1,
     padding: 10,
@@ -295,8 +253,6 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flex: 4,
-    // backgroundColor: "red",
-    // paddingHorizontal: 20,
   },
   backButton: {
     flexDirection: "row",
@@ -306,6 +262,5 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     justifyContent: "space-between",
-    // backgroundColor: "lightblue",
   },
 });

@@ -1,13 +1,7 @@
-import {
-  TouchableHighlight,
-  Text,
-  Pressable,
-  StyleSheet,
-  Animated,
-} from "react-native";
+import { TouchableHighlight, Text, StyleSheet } from "react-native";
 import React from "react";
 
-export default function Button({ scaleAnim, label, type, handlePress, icon }) {
+export default function Button({ label, type, handlePress, icon }) {
   const getTextColor =
     type === "operator" ? "green" : type === "clear" ? "red" : "#fff";
 
@@ -18,12 +12,10 @@ export default function Button({ scaleAnim, label, type, handlePress, icon }) {
 
   return (
     <TouchableHighlight
-      // activeOpacity={0.6}
       underlayColor={type === "equal" ? "#04ac04" : "#444444"}
       style={[styles.button, getButtonColor]}
       onPress={() => handlePress(label)}
     >
-      {/* <Animated.View style={{ transform: [{ scale: scaleAnim }] }}> */}
       {icon ? (
         icon
       ) : (
@@ -31,7 +23,6 @@ export default function Button({ scaleAnim, label, type, handlePress, icon }) {
           {label}
         </Text>
       )}
-      {/* </Animated.View> */}
     </TouchableHighlight>
   );
 }
