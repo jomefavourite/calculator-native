@@ -46,11 +46,9 @@ export default function App() {
   const [isCursorSel, setIsCursorSel] = useState(false);
   const appState = useRef(AppState.currentState);
 
-  const scaleAnim = 0;
-
   useEffect(() => {
     if (valueHasOp(calValue)) {
-      let prevAns = eval(calValue);
+      let prevAns = Function(`return ${calValue}`)();
       setPreviewValue(`${prevAns}`);
     } else {
       setPreviewValue(``);
@@ -77,8 +75,8 @@ export default function App() {
   const handlePress = (text) => {
     const corrText = text === "X" ? "*" : text === "+/-" ? "-" : text;
 
+    setCursorSel({ end: cursorSel.end + 1, start: cursorSel.start + 1 });
     setCalValue((prev) => {
-      setCursorSel({ end: cursorSel.end + 1, start: cursorSel.start + 1 });
       if (prev.length !== cursorSel.end && isCursorSel) {
         let leftOver = prev.slice(0, cursorSel.end);
         let rightOver = prev.slice(cursorSel.end, prev.length);
