@@ -44,10 +44,14 @@ export default function App() {
   const [previewValue, setPreviewValue] = useState("");
   const [cursorSel, setCursorSel] = useState({ end: 0, start: 0 });
   const [isCursorSel, setIsCursorSel] = useState(false);
+  const [isAnswer, setIsAnswer] = useState(false);
   const appState = useRef(AppState.currentState);
 
   // const scaleAnim = useRef(new Animated.Value(1)).current;
   const scaleAnim = 0;
+  const ansColor = {
+    color: isAnswer ? "green" : "white",
+  };
 
   useEffect(() => {
     if (valueHasOp(calValue)) {
@@ -77,6 +81,7 @@ export default function App() {
   }, []);
 
   const handlePress = (text) => {
+    setIsAnswer(false);
     const corrText = text === "X" ? "*" : text === "+/-" ? "-" : text;
 
     setCursorSel({ end: cursorSel.end + 1, start: cursorSel.start + 1 });
@@ -104,13 +109,14 @@ export default function App() {
     if (!previewValue) return;
     setCalValue(previewValue);
     setPreviewValue("");
+    setIsAnswer(true);
     setCursorSel({ end: previewValue.length, start: previewValue.length });
   };
 
   return (
     <View style={styles.container}>
       <TextInput
-        style={styles.input}
+        style={[styles.input, ansColor]}
         value={calValue}
         onChangeText={setCalValue}
         selection={cursorSel}
