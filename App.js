@@ -1,16 +1,9 @@
 import { StatusBar } from "expo-status-bar";
-import { useState, useEffect, useRef } from "react";
-import {
-  Pressable,
-  StyleSheet,
-  TextInput,
-  View,
-  Keyboard,
-  AppState,
-} from "react-native";
-import Button from "./components/Button";
+import { useEffect, useState } from "react";
+import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { Ionicons, FontAwesome5, FontAwesome } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import Button from "./components/Button";
 
 function valueHasOp(text) {
   if (text.length === 0) return false;
@@ -35,16 +28,20 @@ function valueHasOp(text) {
     ) {
       return true;
     }
-    // return false;
   }
   return false;
 }
+
 export default function App() {
   const [calValue, setCalValue] = useState("");
   const [previewValue, setPreviewValue] = useState("");
+  const [isAnswer, setIsAnswer] = useState(false);
   const [cursorSel, setCursorSel] = useState({ end: 0, start: 0 });
   const [isCursorSel, setIsCursorSel] = useState(false);
-  const appState = useRef(AppState.currentState);
+
+  const ansColor = {
+    color: isAnswer ? "green" : "white",
+  };
 
   useEffect(() => {
     if (valueHasOp(calValue)) {
@@ -55,28 +52,17 @@ export default function App() {
     }
   }, [calValue]);
 
-  useEffect(() => {
-    const subscription = AppState.addEventListener("change", (nextAppState) => {
-      if (
-        appState.current.match(/inactive|background/) &&
-        nextAppState === "active"
-      ) {
-        Keyboard.dismiss();
-      }
-
-      appState.current = nextAppState;
-    });
-
-    return () => {
-      subscription.remove();
-    };
-  }, []);
+  const handleBackSpace = () => {
+    const remainValue = calValue.slice(0, calValue.length - 1);
+    setCalValue(() => remainValue);
+  };
 
   const handlePress = (text) => {
+    setIsAnswer(false);
     const corrText = text === "X" ? "*" : text === "+/-" ? "-" : text;
 
+    setCursorSel({ end: cursorSel.end + 1, start: cursorSel.start + 1 });
     setCalValue((prev) => {
-      setCursorSel({ end: cursorSel.end + 1, start: cursorSel.start + 1 });
       if (prev.length !== cursorSel.end && isCursorSel) {
         let leftOver = prev.slice(0, cursorSel.end);
         let rightOver = prev.slice(cursorSel.end, prev.length);
@@ -91,21 +77,18 @@ export default function App() {
     setCalValue("");
   };
 
-  const handleBackSpace = () => {
-    const remainValue = calValue.slice(0, calValue.length - 1);
-    setCalValue(() => remainValue);
-  };
-
   const handleEqual = () => {
     if (!previewValue) return;
     setCalValue(previewValue);
     setPreviewValue("");
+    setIsAnswer(true);
+    setCursorSel({ end: previewValue.length, start: previewValue.length });
   };
 
   return (
     <View style={styles.container}>
       <TextInput
-        style={styles.input}
+        style={[styles.input, ansColor]}
         value={calValue}
         onChangeText={setCalValue}
         selection={cursorSel}
@@ -143,7 +126,7 @@ export default function App() {
 
       <View
         style={{
-          height: 1,
+          height: 2,
           backgroundColor: "#575757",
           marginVertical: 20,
         }}
@@ -219,7 +202,7 @@ export default function App() {
         </Row>
       </View>
 
-      <StatusBar style='light' />
+      <StatusBar style='auto' />
     </View>
   );
 }
@@ -248,9 +231,6 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     color: "#616161",
   },
-  buttonContainer: {
-    flex: 4,
-  },
   backButton: {
     flexDirection: "row",
     justifyContent: "flex-end",
@@ -259,5 +239,8 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     justifyContent: "space-between",
+  },
+  buttonContainer: {
+    flex: 4,
   },
 });
