@@ -75,8 +75,8 @@ export default function App() {
   const handlePress = (text) => {
     const corrText = text === "X" ? "*" : text === "+/-" ? "-" : text;
 
-    setCursorSel({ end: cursorSel.end + 1, start: cursorSel.start + 1 });
     setCalValue((prev) => {
+      setCursorSel({ end: cursorSel.end + 1, start: cursorSel.start + 1 });
       if (prev.length !== cursorSel.end && isCursorSel) {
         let leftOver = prev.slice(0, cursorSel.end);
         let rightOver = prev.slice(cursorSel.end, prev.length);
@@ -98,7 +98,6 @@ export default function App() {
 
   const handleEqual = () => {
     if (!previewValue) return;
-    console.log(previewValue, "previewValue");
     setCalValue(previewValue);
     setPreviewValue("");
   };
