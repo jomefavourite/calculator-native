@@ -7,7 +7,6 @@ import {
   View,
   Keyboard,
   AppState,
-  Animated,
 } from "react-native";
 import Button from "./components/Button";
 import { Ionicons, FontAwesome5, FontAwesome } from "@expo/vector-icons";
@@ -51,10 +50,8 @@ export default function App() {
   const scaleAnim = 0;
 
   useEffect(() => {
-    // console.log(valueHasOp(calValue), "valueHasOp");
     if (valueHasOp(calValue)) {
-      // console.log(eval(calValue), "eval");
-      let prevAns = eval(calValue);
+      let prevAns = Function(`return ${calValue}`)();
       setPreviewValue(`${prevAns}`);
     } else {
       setPreviewValue(``);
@@ -82,22 +79,8 @@ export default function App() {
   const handlePress = (text) => {
     const corrText = text === "X" ? "*" : text === "+/-" ? "-" : text;
 
-    // Animated.timing(scaleAnim, {
-    //   toValue: 0.5,
-    //   duration: 200,
-    //   useNativeDriver: true,
-    // }).start(({ finished }) => {
-    //   if (!finished) {
-    //     setTimeout(() => {
-    //       Animated.spring(scaleAnim, {
-    //         toValue: 1,
-    //       }).start();
-    //     }, 0);
-    //   }
-    // });
-
+    setCursorSel({ end: cursorSel.end + 1, start: cursorSel.start + 1 });
     setCalValue((prev) => {
-      setCursorSel({ end: cursorSel.end + 1, start: cursorSel.start + 1 });
       if (prev.length !== cursorSel.end && isCursorSel) {
         let leftOver = prev.slice(0, cursorSel.end);
         let rightOver = prev.slice(cursorSel.end, prev.length);
@@ -119,9 +102,9 @@ export default function App() {
 
   const handleEqual = () => {
     if (!previewValue) return;
-    console.log(previewValue, "previewValue");
     setCalValue(previewValue);
     setPreviewValue("");
+    setCursorSel({ end: previewValue.length, start: previewValue.length });
   };
 
   return (
